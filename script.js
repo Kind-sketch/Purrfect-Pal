@@ -8,6 +8,7 @@ let catState = {
     name: "Whiskers",
     gender: 'male',
     color: 'Orange',
+    eyeColor: '#333333', // Default eye color (black)
     mood: 'Content',
     activity: 'Idle',
     energy: 100,
@@ -35,11 +36,18 @@ function initGame() {
     catState.name = localStorage.getItem('catName') || 'Whiskers';
     catState.gender = localStorage.getItem('catGender') || 'male';
     catState.color = localStorage.getItem('catColor') || 'Orange';
+    catState.eyeColor = localStorage.getItem('catEyeColor') || '#333333'; // Load eye color
     
+    // Set the initial value for the eye color dropdown
+    const catEyeColorDropdown = document.getElementById('catEyeColor');
+    if (catEyeColorDropdown) {
+        catEyeColorDropdown.value = catState.eyeColor;
+    }
+
     // Create DOM cat if it doesn't exist
     createDOMCat();
     
-    // Update cat appearance based on color
+    // Update cat appearance based on color and eye color
     updateCatAppearance();
     
     // Update UI with initial cat info
@@ -53,6 +61,7 @@ function initGame() {
     document.getElementById('feedButton').addEventListener('click', feedCat);
     document.getElementById('playButton').addEventListener('click', playCat);
     document.getElementById('sleepWakeButton').addEventListener('click', toggleSleep);
+    document.getElementById('saveCustomization').addEventListener('click', saveCatCustomization); // Add listener for save button
     
     // Make cat clickable for petting
     const catContainer = document.getElementById('catContainer');
@@ -163,9 +172,10 @@ function updateButtonText() {
 }
 
 /**
- * Update cat's appearance based on color
+ * Update cat's appearance based on color and eye color
  */
 function updateCatAppearance() {
+    const catBodyElement = document.getElementById('catBody'); // Get the cat body or a suitable parent for CSS vars
     const catParts = document.querySelectorAll('.cat-ear, .cat-face, .cat-torso, .cat-leg, .cat-tail');
     let colorVar;
     
@@ -187,10 +197,46 @@ function updateCatAppearance() {
         default:
             colorVar = 'var(--cat-orange)';
     }
+    catParts.forEach(part => part.style.backgroundColor = colorVar);
+
+    // Update eye color using CSS variable
+    if (catBodyElement) {
+        catBodyElement.style.setProperty('--cat-eye-color-dynamic', catState.eyeColor);
+    }
     
-    catParts.forEach(part => {
-        part.style.backgroundColor = colorVar;
+    // If you also want to update the color of specific parts like ears/tail to match the body:
+    const mainColorParts = document.querySelectorAll('.cat-head, .cat-ear, .cat-torso, .cat-leg, .cat-tail');
+    mainColorParts.forEach(part => {
+        // Check if the part is not meant to be a different color (e.g. inner ear)
+        if (!part.classList.contains('inner-ear')) { // Example class, adjust as needed
+            part.style.backgroundColor = colorVar;
+        }
     });
+}
+
+/**
+ * Save cat customization settings
+ */
+function saveCatCustomization() {
+    const nameInput = document.getElementById('catName');
+    const genderInput = document.querySelector('input[name="gender"]:checked');
+    const colorInput = document.getElementById('catColor');
+    const eyeColorInput = document.getElementById('catEyeColor');
+
+    catState.name = nameInput ? nameInput.value : 'Whiskers';
+    catState.gender = genderInput ? genderInput.value : 'male';
+    catState.color = colorInput ? colorInput.value : 'Orange';
+    catState.eyeColor = eyeColorInput ? eyeColorInput.value : '#333333';
+
+    localStorage.setItem('catName', catState.name);
+    localStorage.setItem('catGender', catState.gender);
+    localStorage.setItem('catColor', catState.color);
+    localStorage.setItem('catEyeColor', catState.eyeColor);
+
+    updateCatAppearance();
+    updateCatInfo(); // This function might need an update if you want to display eye color
+    updateButtonText();
+    showMessage(`${catState.name}'s settings have been updated!`);
 }
 
 /**
@@ -206,48 +252,15 @@ function updateCatInfo() {
     
     const colorDisplay = document.getElementById('catColorDisplay');
     if (colorDisplay) colorDisplay.textContent = catState.color;
-    
-    const moodDisplay = document.getElementById('catMoodDisplay');
-    if (moodDisplay) moodDisplay.textContent = catState.mood;
-    
-    const activityDisplay = document.getElementById('catActivityDisplay');
-    if (activityDisplay) activityDisplay.textContent = catState.activity;
-    
-    const energyDisplay = document.getElementById('catEnergyDisplay');
-    if (energyDisplay) energyDisplay.textContent = catState.energy;
-    
-    const energyBar = document.getElementById('energyBar');
-    if (energyBar) energyBar.value = catState.energy;
-    
-    // Update cat description
-    const catDescription = document.getElementById('catDescription');
-    if (catDescription) {
-        catDescription.textContent = `${catState.name} - ${catState.color} ${catState.gender === 'male' ? 'Boy' : 'Girl'}`;
-    }
-    
-    // Update sleep/wake button text
-    updateButtonText();
-    
-    // Update cat body class for animations
-    const catBody = document.getElementById('catBody');
-    if (catBody) {
-        // Clear existing state classes
-        catBody.classList.remove('sleeping', 'playing', 'eating', 'happy');
-        
-        // Add current state class
-        if (catState.isSleeping) {
-            catBody.classList.add('sleeping');
-        } else if (catState.activity === 'Playing') {
-            catBody.classList.add('playing');
-        } else if (catState.activity === 'Eating') {
-            catBody.classList.add('eating');
-        }
-        
-        // Add mood class
-        if (catState.mood === 'Happy') {
-            catBody.classList.add('happy');
-        }
-    }
+    // If you add an eye color display element:
+    // const eyeColorDisplay = document.getElementById('catEyeColorDisplay');
+    // if (eyeColorDisplay) eyeColorDisplay.textContent = catState.eyeColor; // Or a more friendly name
+
+    document.getElementById('catMoodDisplay').textContent = catState.mood;
+    document.getElementById('catActivityDisplay').textContent = catState.activity;
+    document.getElementById('catEnergyDisplay').textContent = catState.energy;
+    document.getElementById('energyBar').value = catState.energy;
+    document.getElementById('catDescription').textContent = `${catState.name} - ${catState.color} ${catState.gender}`;
 }
 
 /**
