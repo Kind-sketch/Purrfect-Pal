@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purrfect Pal - Virtual Cat Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Purrfect Pal</h1>
+            <p>Your virtual cat companion</p>
+        </header>
+        
+        <main>
+            <!-- Game Area - This is where the cat environment will be created -->
+            <div id="gameArea">
+                <!-- Cat environment will be created here by JavaScript -->
+            </div>
+            
+            <!-- Cat Information Panel -->
+            <div id="catInfoPanel">
+                <h2 id="catDescription">Whiskers - Orange Boy</h2>
+                
+                <div class="cat-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Name:</span>
+                        <span id="catNameDisplay">Whiskers</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Gender:</span>
+                        <span id="catGenderDisplay">male</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Color:</span>
+                        <span id="catColorDisplay">Orange</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Mood:</span>
+                        <span id="catMoodDisplay">Content</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Activity:</span>
+                        <span id="catActivityDisplay">Idle</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Energy:</span>
+                        <span id="catEnergyDisplay">100</span>
+                        <progress id="energyBar" value="100" max="100"></progress>
+                    </div>
+                </div>
+                
+                <!-- Interaction Buttons -->
+                <div class="interaction-buttons">
+                    <button id="petButton">Pet Whiskers</button>
+                    <button id="feedButton">Feed Whiskers</button>
+                    <button id="playButton">Play with Whiskers</button>
+                    <button id="sleepWakeButton">Let Whiskers Sleep</button>
+                </div>
+                
+                <!-- Message Area -->
+                <div id="userMessage">Meet your cat! Try interacting with it.</div>
+            </div>
+            
+            <!-- Cat Customization Form -->
+            <div id="catCustomization">
+                <h3>Customize Your Cat</h3>
+                <form id="customizationForm">
+                    <div class="form-group">
+                        <label for="catName">Name:</label>
+                        <input type="text" id="catName" value="Whiskers">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Gender:</label>
+                        <label><input type="radio" name="gender" value="male" checked> Male</label>
+                        <label><input type="radio" name="gender" value="female"> Female</label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="catColor">Color:</label>
+                        <select id="catColor">
+                            <option value="Orange">Orange</option>
+                            <option value="Black">Black</option>
+                            <option value="White">White</option>
+                            <option value="Gray">Gray</option>
+                            <option value="Calico">Calico</option>
+                        </select>
+                    </div>
+                    
+                    <button type="button" id="saveCustomization">Save Changes</button>
+                </form>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Purrfect Pal - Virtual Cat Game</p>
+        </footer>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

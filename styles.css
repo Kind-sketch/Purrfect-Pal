@@ -1,0 +1,467 @@
+/* Main CSS Variables */
+:root {
+    --primary-color: #6a4c93;
+    --secondary-color: #f8961e;
+    --background-color: #f1faee;
+    --text-color: #1d3557;
+    --accent-color: #e63946;
+    
+    /* Cat Colors */
+    --cat-orange: #f8961e;
+    --cat-black: #333333;
+    --cat-white: #f5f5f5;
+    --cat-gray: #9a9a9a;
+    --cat-calico: #e6c18a;
+}
+
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    main {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Game Area Styles */
+#gameArea {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 500px;
+    position: relative;
+    overflow: hidden;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="50" height="50" x="0" y="0" fill="%23f9f9f9"/><rect width="50" height="50" x="50" y="50" fill="%23f9f9f9"/><rect width="50" height="50" x="50" y="0" fill="%23f5f5f5"/><rect width="50" height="50" x="0" y="50" fill="%23f5f5f5"/></svg>');
+    background-size: 40px 40px;
+}
+
+/* Cat Environment Elements */
+#catEnvironment {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* Cat Container */
+#catContainer {
+    position: absolute;
+    width: 80px;
+    height: 60px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    z-index: 10;
+}
+
+/* Cat Body */
+.cat-body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+/* Cat Head */
+.cat-head {
+    position: absolute;
+    width: 40px;
+    height: 35px;
+    top: 0;
+    left: 20px;
+    border-radius: 50%;
+    background-color: var(--cat-orange);
+    z-index: 2;
+}
+
+/* Cat Ears */
+.cat-ears {
+    position: absolute;
+    width: 100%;
+    top: -10px;
+}
+
+.cat-ear {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 20px solid var(--cat-orange);
+}
+
+.cat-ear.left {
+    left: 5px;
+    transform: rotate(-30deg);
+}
+
+.cat-ear.right {
+    right: 5px;
+    transform: rotate(30deg);
+}
+
+/* Cat Face */
+.cat-face {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Cat Eyes */
+.cat-eyes {
+    position: absolute;
+    width: 100%;
+    top: 12px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.cat-eye {
+    width: 8px;
+    height: 8px;
+    background-color: #333;
+    border-radius: 50%;
+}
+
+/* Cat Nose */
+.cat-nose {
+    position: absolute;
+    width: 6px;
+    height: 4px;
+    background-color: #ff9999;
+    border-radius: 50%;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Cat Mouth */
+.cat-mouth {
+    position: absolute;
+    width: 8px;
+    height: 3px;
+    border-bottom: 2px solid #333;
+    border-radius: 50%;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Cat Torso */
+.cat-torso {
+    position: absolute;
+    width: 60px;
+    height: 30px;
+    background-color: var(--cat-orange);
+    border-radius: 50% / 60%;
+    top: 25px;
+    left: 10px;
+    z-index: 1;
+}
+
+/* Cat Legs */
+.cat-legs {
+    position: absolute;
+    width: 100%;
+    height: 20px;
+    top: 40px;
+}
+
+.cat-leg {
+    position: absolute;
+    width: 8px;
+    height: 20px;
+    background-color: var(--cat-orange);
+    border-radius: 5px;
+}
+
+.cat-leg.front-left {
+    left: 15px;
+}
+
+.cat-leg.front-right {
+    left: 30px;
+}
+
+.cat-leg.back-left {
+    left: 45px;
+}
+
+.cat-leg.back-right {
+    left: 60px;
+}
+
+/* Cat Tail */
+.cat-tail {
+    position: absolute;
+    width: 30px;
+    height: 8px;
+    background-color: var(--cat-orange);
+    border-radius: 5px;
+    top: 30px;
+    right: -15px;
+    transform-origin: left center;
+    transform: rotate(-10deg);
+    z-index: 0;
+    animation: tailWag 2s infinite alternate;
+}
+
+/* Cat Shadow */
+.cat-shadow {
+    position: absolute;
+    width: 70px;
+    height: 15px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    bottom: -5px;
+    left: 5px;
+    z-index: 0;
+}
+
+/* Environment Objects */
+.food-bowl {
+    position: absolute;
+    width: 30px;
+    height: 10px;
+    border-radius: 15px 15px 5px 5px;
+    background-color: #d1d1d1;
+    bottom: 20px;
+    left: 20px;
+}
+
+.food-bowl.filled::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 5px;
+    background-color: #a67c52;
+    border-radius: 10px;
+    bottom: 2px;
+    left: 5px;
+}
+
+.toy-ball {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: var(--secondary-color);
+    border-radius: 50%;
+    bottom: 20px;
+    right: 70px;
+}
+
+.cat-bed {
+    position: absolute;
+    width: 80px;
+    height: 40px;
+    background-color: #d1d1d1;
+    border-radius: 40px 40px 10px 10px;
+    bottom: 20px;
+    right: 20px;
+}
+
+.cat-bed::after {
+    content: '';
+    position: absolute;
+    width: 70px;
+    height: 30px;
+    background-color: #f0f0f0;
+    border-radius: 35px 35px 5px 5px;
+    bottom: 5px;
+    left: 5px;
+}
+
+/* Cat Info Panel */
+#catInfoPanel {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    grid-column: 2;
+    grid-row: 1;
+}
+
+#catDescription {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.cat-stats {
+    margin-bottom: 20px;
+}
+
+.stat-row {
+    display: flex;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.stat-label {
+    font-weight: bold;
+    width: 80px;
+}
+
+#energyBar {
+    margin-left: 10px;
+    flex-grow: 1;
+    height: 15px;
+}
+
+/* Interaction Buttons */
+.interaction-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #8a63b8;
+}
+
+/* User Message */
+#userMessage {
+    background-color: #f5f5f5;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+/* Cat Customization */
+#catCustomization {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    grid-column: 2;
+    grid-row: 2;
+}
+
+#catCustomization h3 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input[type="text"],
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Cat Animation Classes */
+.cat-body.sleeping {
+    transform: rotate(45deg);
+}
+
+.cat-body.sleeping .cat-eye {
+    height: 1px;
+    transform: rotate(180deg);
+}
+
+.cat-body.playing {
+    animation: playJump 1s infinite alternate;
+}
+
+.cat-body.eating {
+    animation: eating 1s infinite;
+}
+
+.cat-body.happy .cat-mouth {
+    border-radius: 0 0 50% 50%;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    height: 5px;
+}
+
+/* Animations */
+@keyframes tailWag {
+    0% {
+        transform: rotate(-10deg);
+    }
+    100% {
+        transform: rotate(10deg);
+    }
+}
+
+@keyframes playJump {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes eating {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(2px);
+    }
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #666;
+    font-size: 0.9em;
+}
