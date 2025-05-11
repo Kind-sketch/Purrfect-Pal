@@ -56,17 +56,62 @@ main {
 
 /* Game Area Styles */
 #gameArea {
-    background-color: #fff;
+    background-color: #fff; /* Day mode background color */
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    height: 500px; /* Consider if min-height or aspect-ratio is more appropriate */
-    position: relative;
+    height: 500px; 
+    position: relative; /* Ensure this is set for absolute positioning of children */
     overflow: hidden;
     grid-column: 1;
     grid-row: 1 / span 2;
+    /* Day mode background image (checkered pattern) */
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="50" height="50" x="0" y="0" fill="%23f9f9f9"/><rect width="50" height="50" x="50" y="50" fill="%23f9f9f9"/><rect width="50" height="50" x="50" y="0" fill="%23f5f5f5"/><rect width="50" height="50" x="0" y="50" fill="%23f5f5f5"/></svg>');
     background-size: 40px 40px;
+    transition: background-image 0.5s ease-in-out, background-color 0.5s ease-in-out; /* Smooth transition */
 }
+
+#gameArea.night-mode {
+    background-color: #0a0a23; /* Dark navy blue for night sky */
+    /* Constellation background using multiple radial gradients for stars */
+    background-image:
+      /* Small stars */
+      radial-gradient(1px 1px at 20px 30px, white, transparent),
+      radial-gradient(1px 1px at 40px 60px, yellow, transparent),
+      radial-gradient(1px 1px at 70px 90px, white, transparent),
+      radial-gradient(1px 1px at 100px 10px, white, transparent),
+      radial-gradient(1px 1px at 130px 40px, yellow, transparent),
+      /* Slightly larger stars */
+      radial-gradient(1.5px 1.5px at 50px 50px, white, transparent),
+      radial-gradient(1.5px 1.5px at 90px 20px, yellow, transparent),
+      radial-gradient(1.5px 1.5px at 20px 110px, white, transparent);
+    background-repeat: repeat;
+    background-size: 150px 150px; /* Size of the repeating tile for stars */
+}
+
+/* Interactive Star Styles */
+.interactive-star {
+    position: absolute;
+    width: 12px; /* Slightly larger and distinct */
+    height: 12px;
+    background-color: #cce7ff; /* Bright, light blue */
+    border-radius: 50%;
+    box-shadow: 0 0 10px 4px #cce7ff, /* Inner glow */
+                0 0 20px 8px #ffffff, /* Outer glow */
+                0 0 30px 12px #89cff0; /* Fainter, wider glow (Sirius blue-ish) */
+    cursor: pointer;
+    z-index: 5; /* Above general background stars, below cat container (z-index 10) */
+    display: none; /* Hidden by default, shown by .night-mode */
+    opacity: 0;
+    transition: opacity 0.7s ease-in-out;
+}
+
+#gameArea.night-mode .interactive-star#siriusStar {
+    display: block; /* Show when night mode is active */
+    opacity: 1;     /* Fade in */
+    top: 15%;       /* Position Sirius (adjust as desired) */
+    left: 80%;      /* Position Sirius (adjust as desired) */
+}
+
 
 /* Cat Environment Elements */
 #catEnvironment {
@@ -106,6 +151,7 @@ main {
     border-radius: 50%;
     background-color: var(--cat-orange); /* This will be set by JS */
     z-index: 2;
+    transition: width 0.3s ease, left 0.3s ease; /* For smooth gender change */
 }
 
 /* Cat Ears - Adjust sizing relative to head or container */
@@ -154,9 +200,15 @@ main {
 .cat-eye {
     width: 8px;
     height: 8px;
-    /* background-color: #333; */ /* Replaced by CSS variable */
     background-color: var(--cat-eye-color-dynamic);
     border-radius: 50%;
+    transition: height 0.3s ease, background-color 0.3s ease; /* Add transition for smooth closing */
+}
+
+/* Style for sleeping eyes */
+.cat-eye.sleeping {
+    height: 2px; /* Makes the eye look like a slit or closed */
+    background-color: var(--cat-eye-color-dynamic); /* Or match face color if preferred */
 }
 
 /* Cat Nose */
@@ -193,6 +245,20 @@ main {
     top: 25px;
     left: 10px;
     z-index: 1;
+    transition: width 0.3s ease, left 0.3s ease; /* For smooth gender change */
+}
+
+/* Styles for a chubbier male cat */
+.cat-body.male .cat-torso {
+    width: 66px; /* Slightly wider torso for male */
+    left: 7px;  /* Adjust left to keep it visually centered: (80 - 66) / 2 = 7 */
+}
+
+.cat-body.male .cat-head {
+    width: 42px; /* Slightly wider head for male */
+    left: 19px;  /* Adjust left: (80 - 42) / 2 - (20-19 for original head centering) = 19 */
+                 /* Original head: left 20px on 80px container. Center of head is at 20 + 40/2 = 40px.
+                    New head width 42px. New left should be 40 - 42/2 = 40 - 21 = 19px. */
 }
 
 /* Cat Legs */

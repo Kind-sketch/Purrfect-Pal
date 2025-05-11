@@ -15,7 +15,8 @@ let catState = {
     isSleeping: false,
     position: { x: 50, y: 50 }, // % of container
     lastFed: Date.now(),
-    lastPetted: Date.now()
+    lastPetted: Date.now(),
+    isNightMode: false // Added for night mode state
 };
 
 // Timeout/interval references for animations and state changes
@@ -37,12 +38,16 @@ function initGame() {
     catState.gender = localStorage.getItem('catGender') || 'male';
     catState.color = localStorage.getItem('catColor') || 'Orange';
     catState.eyeColor = localStorage.getItem('catEyeColor') || '#333333'; // Load eye color
+    catState.isNightMode = localStorage.getItem('isNightMode') === 'true'; // Load night mode state
     
     // Set the initial value for the eye color dropdown
     const catEyeColorDropdown = document.getElementById('catEyeColor');
     if (catEyeColorDropdown) {
         catEyeColorDropdown.value = catState.eyeColor;
     }
+
+    // Apply initial night mode setting
+    applyNightMode();
 
     // Create DOM cat if it doesn't exist
     createDOMCat();
@@ -61,7 +66,16 @@ function initGame() {
     document.getElementById('feedButton').addEventListener('click', feedCat);
     document.getElementById('playButton').addEventListener('click', playCat);
     document.getElementById('sleepWakeButton').addEventListener('click', toggleSleep);
-    document.getElementById('saveCustomization').addEventListener('click', saveCatCustomization); // Add listener for save button
+    document.getElementById('saveCustomization').addEventListener('click', saveCatCustomization); 
+    document.getElementById('toggleNightModeButton').addEventListener('click', toggleNightMode); 
+    
+    // Add event listener for Sirius star
+    const siriusStarElement = document.getElementById('siriusStar');
+    if (siriusStarElement) {
+        siriusStarElement.addEventListener('click', () => {
+            showMessage("Trust the plan, work , grind and rest. :D");
+        });
+    }
     
     // Make cat clickable for petting
     const catContainer = document.getElementById('catContainer');
@@ -175,8 +189,7 @@ function updateButtonText() {
  * Update cat's appearance based on color and eye color
  */
 function updateCatAppearance() {
-    const catBodyElement = document.getElementById('catBody'); // Get the cat body or a suitable parent for CSS vars
-    const catParts = document.querySelectorAll('.cat-ear, .cat-face, .cat-torso, .cat-leg, .cat-tail');
+    const catBodyElement = document.getElementById('catBody');
     let colorVar;
     
     switch(catState.color.toLowerCase()) {
@@ -191,27 +204,39 @@ function updateCatAppearance() {
             break;
         case 'calico':
             colorVar = 'var(--cat-calico)';
-            // For calico, we could add some spots, but keeping it simple for now
             break;
         case 'orange':
         default:
             colorVar = 'var(--cat-orange)';
     }
-    catParts.forEach(part => part.style.backgroundColor = colorVar);
-
-    // Update eye color using CSS variable
-    if (catBodyElement) {
-        catBodyElement.style.setProperty('--cat-eye-color-dynamic', catState.eyeColor);
-    }
     
-    // If you also want to update the color of specific parts like ears/tail to match the body:
-    const mainColorParts = document.querySelectorAll('.cat-head, .cat-ear, .cat-torso, .cat-leg, .cat-tail');
-    mainColorParts.forEach(part => {
-        // Check if the part is not meant to be a different color (e.g. inner ear)
-        if (!part.classList.contains('inner-ear')) { // Example class, adjust as needed
+    // Apply main color to relevant parts
+    const mainColorBodyParts = document.querySelectorAll('.cat-head, .cat-torso, .cat-leg, .cat-tail');
+    mainColorBodyParts.forEach(part => {
+        if (!part.classList.contains('inner-ear')) { 
             part.style.backgroundColor = colorVar;
         }
     });
+
+    const ears = document.querySelectorAll('.cat-ear');
+    ears.forEach(ear => ear.style.borderBottomColor = colorVar);
+
+    if (catBodyElement) {
+        catBodyElement.style.setProperty('--cat-eye-color-dynamic', catState.eyeColor);
+
+        // Apply gender-specific body shape
+        catBodyElement.classList.remove('male'); // Remove class first to reset
+        if (catState.gender === 'male') {
+            catBodyElement.classList.add('male');
+        }
+    }
+    
+    const eyes = document.querySelectorAll('.cat-eye');
+    if (catState.isSleeping) {
+        eyes.forEach(eye => eye.classList.add('sleeping'));
+    } else {
+        eyes.forEach(eye => eye.classList.remove('sleeping'));
+    }
 }
 
 /**
@@ -409,6 +434,7 @@ function toggleSleep() {
         catState.mood = 'Content';
         
         showMessage(`${catState.name} wakes up and stretches.`);
+        clearInterval(actionTimeouts.energyRecovery); // Stop energy recovery when woken up
     } else {
         // Put cat to sleep
         catState.isSleeping = true;
@@ -420,16 +446,17 @@ function toggleSleep() {
         moveCatTo(80, 70);
         
         // Recover energy while sleeping
-        clearInterval(actionTimeouts.energyRecovery);
+        clearInterval(actionTimeouts.energyRecovery); // Clear any existing interval
         actionTimeouts.energyRecovery = setInterval(() => {
             if (catState.isSleeping) {
                 catState.energy = Math.min(100, catState.energy + 5);
-                updateCatInfo();
+                updateCatInfo(); // Update energy display
                 
                 // Cat wakes up when fully rested
                 if (catState.energy >= 100) {
-                    toggleSleep();
-                    clearInterval(actionTimeouts.energyRecovery);
+                    showMessage(`${catState.name} is fully rested and wakes up!`);
+                    toggleSleep(); // This will flip isSleeping and call necessary updates
+                    // The interval will be cleared by the toggleSleep call or the isSleeping check
                 }
             } else {
                 clearInterval(actionTimeouts.energyRecovery);
@@ -439,6 +466,8 @@ function toggleSleep() {
     
     // Update UI
     updateCatInfo();
+    updateCatAppearance(); // Handles eye closing/opening
+    updateButtonText();    // Correctly updates the sleep/wake button text
 }
 
 /**
@@ -593,3 +622,33 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('resize', () => {
     // No need to adjust anything for DOM-based cat
 });
+
+/**
+ * Toggles night mode on/off
+ */
+function toggleNightMode() {
+    catState.isNightMode = !catState.isNightMode;
+    localStorage.setItem('isNightMode', catState.isNightMode.toString()); // Store as string
+    applyNightMode();
+}
+
+/**
+ * Applies night mode visuals based on catState.isNightMode
+ */
+function applyNightMode() {
+    const gameArea = document.getElementById('gameArea');
+    const toggleButton = document.getElementById('toggleNightModeButton');
+    // const siriusStar = document.getElementById('siriusStar'); // CSS handles visibility
+
+    if (gameArea) {
+        if (catState.isNightMode) {
+            gameArea.classList.add('night-mode');
+            if (toggleButton) toggleButton.textContent = 'Disable Night Mode';
+            // if (siriusStar) siriusStar.style.display = 'block'; // CSS handles this now
+        } else {
+            gameArea.classList.remove('night-mode');
+            if (toggleButton) toggleButton.textContent = 'Enable Night Mode';
+            // if (siriusStar) siriusStar.style.display = 'none'; // CSS handles this now
+        }
+    }
+}
